@@ -3,156 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prank Soundboard</title>
+<title>Soundboard</title>
 
 <style>
-
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:"Segoe UI",sans-serif;
+    font-family:Segoe UI,sans-serif;
 }
 
 body{
-    min-height:100vh;
     background:#050505;
     color:white;
-    overflow-x:hidden;
+    min-height:100vh;
 }
 
-/* ===== TŁO ===== */
-
-.bg{
-    position:fixed;
-    inset:0;
-    z-index:-1;
-}
-
-.blob{
-    position:absolute;
-    width:500px;
-    height:500px;
-    border-radius:50%;
-    filter:blur(120px);
-    opacity:.7;
-}
-
-.blob:nth-child(1){
-    background:#0066ff;
-    left:-100px;
-    top:-100px;
-}
-
-.blob:nth-child(2){
-    background:#7b2fff;
-    right:-100px;
-    top:100px;
-}
-
-.blob:nth-child(3){
-    background:#00d4ff;
-    bottom:-150px;
-    left:30%;
-}
-
-/* ===== HEADER ===== */
+/* HEADER */
 
 .header{
+    padding:20px;
     position:sticky;
     top:0;
-    padding:20px;
+    background:rgba(0,0,0,.6);
     backdrop-filter:blur(20px);
-    background:rgba(0,0,0,.25);
-    z-index:100;
 }
 
 h1{
     text-align:center;
-    margin-bottom:15px;
+    margin-bottom:10px;
 }
 
-.search{
+input{
     width:100%;
-    max-width:700px;
+    max-width:600px;
     display:block;
     margin:auto;
-
-    padding:15px;
-
+    padding:12px;
+    border-radius:10px;
     border:none;
     outline:none;
-
-    border-radius:15px;
-
-    background:rgba(255,255,255,.12);
-    color:white;
-
-    font-size:16px;
 }
 
-.search::placeholder{
-    color:#ddd;
-}
-
-/* ===== GRID ===== */
+/* GRID */
 
 .grid{
-    padding:25px;
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-    gap:15px;
-}
-
-.sound-btn{
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.15);
-    backdrop-filter:blur(15px);
-    border-radius:20px;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:10px;
     padding:20px;
-    color:white;
+}
+
+.btn{
+    background:#222;
+    padding:15px;
+    border-radius:10px;
     cursor:pointer;
-    transition:.2s;
     text-align:center;
-    font-size:18px;
+    transition:.2s;
 }
 
-.sound-btn:hover{
-    transform:scale(1.03);
-    background:rgba(255,255,255,.15);
+.btn:hover{
+    background:#444;
 }
 
-.sound-btn.playing{
-    border-color:#00ff88;
-    box-shadow:0 0 20px rgba(0,255,136,.4);
+.btn.active{
+    background:#00ff88;
+    color:black;
 }
-
 </style>
 </head>
+
 <body>
 
-<div class="bg">
-    <div class="blob"></div>
-    <div class="blob"></div>
-    <div class="blob"></div>
-</div>
-
 <div class="header">
-    <h1>🔊 Prank Soundboard</h1>
-
-    <input
-        type="text"
-        id="search"
-        class="search"
-        placeholder="Search sounds..."
-    >
+<h1>🔊 Soundboard</h1>
+<input id="search" placeholder="Szukaj dźwięku...">
 </div>
 
 <div class="grid" id="grid"></div>
 
 <script>
 
-const soundFiles = ["67.mp3",
+const soundFiles = [
+"67.mp3",
 "aiaiaiii.mp3",
 "airhorn.mp3",
 "aughh.mp3",
@@ -217,3 +151,57 @@ const soundFiles = ["67.mp3",
 "Yayyy!SoundEffect.mp3",
 "Yum!-TurkeyLeg-Roblox.mp3"
 ];
+
+const grid = document.getElementById("grid");
+const search = document.getElementById("search");
+
+let currentAudio = null;
+
+function render(filter=""){
+
+grid.innerHTML = "";
+
+soundFiles
+.filter(s => s.toLowerCase().includes(filter.toLowerCase()))
+.forEach(file => {
+
+const div = document.createElement("div");
+div.className = "btn";
+
+div.textContent = file.replace(".mp3","");
+
+div.onclick = () => {
+
+if(currentAudio){
+currentAudio.pause();
+currentAudio.currentTime = 0;
+}
+
+const audio = new Audio("sounds/" + file);
+currentAudio = audio;
+
+audio.play();
+
+div.classList.add("active");
+
+audio.onended = () => {
+div.classList.remove("active");
+};
+};
+
+grid.appendChild(div);
+
+});
+
+}
+
+search.addEventListener("input", e=>{
+render(e.target.value);
+});
+
+render();
+
+</script>
+
+</body>
+</html>
