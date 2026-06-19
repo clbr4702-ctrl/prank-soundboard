@@ -105,25 +105,15 @@ h1{
 }
 
 .sound-btn{
-
     background:rgba(255,255,255,.08);
-
     border:1px solid rgba(255,255,255,.15);
-
     backdrop-filter:blur(15px);
-
     border-radius:20px;
-
     padding:20px;
-
     color:white;
-
     cursor:pointer;
-
     transition:.2s;
-
     text-align:center;
-
     font-size:18px;
 }
 
@@ -148,7 +138,6 @@ h1{
 </div>
 
 <div class="header">
-
     <h1>🔊 Prank Soundboard</h1>
 
     <input
@@ -157,224 +146,74 @@ h1{
         class="search"
         placeholder="Search sounds..."
     >
-
 </div>
 
 <div class="grid" id="grid"></div>
 
 <script>
 
-const sounds = [
-
-{
-name:"🚨 Air Horn",
-file:"sounds/airhorn.mp3"
-},
-
-{
-name:"💨 Fart",
-file:"sounds/fart.mp3"
-},
-
-{
-name:"🚔 Police Siren",
-file:"sounds/police.mp3"
-},
-
-{
-name:"💥 Vine Boom",
-file:"sounds/vineboom.mp3"
-},
-
-{
-name:"🔔 Bell",
-file:"sounds/bell.mp3"
-},
-
-{
-name:"🐱 Meow",
-file:"sounds/meow.mp3"
-},
-
-{
-name:"🐶 Bark",
-file:"sounds/bark.mp3"
-},
-
-{
-name:"😂 Laugh",
-file:"sounds/laugh.mp3"
-},
-
-{
-name:"🚪 Knock",
-file:"sounds/knock.mp3"
-},
-
-{
-name:"📱 iPhone",
-file:"sounds/iphone.mp3"
-},
-
-{
-name:"🎺 Trumpet",
-file:"sounds/trumpet.mp3"
-},
-
-{
-name:"🔥 Bruh",
-file:"sounds/bruh.mp3"
-},
-
-{
-name:"⚡ Error",
-file:"sounds/error.mp3"
-},
-
-{
-name:"🎮 Among Us",
-file:"sounds/amongus.mp3"
-},
-
-{
-name:"🚗 Car Horn",
-file:"sounds/carhorn.mp3"
-},
-
-{
-name:"👻 Scary",
-file:"sounds/scary.mp3"
-},
-
-{
-name:"🐔 Chicken",
-file:"sounds/chicken.mp3"
-},
-
-{
-name:"🦆 Duck",
-file:"sounds/duck.mp3"
-},
-
-{
-name:"🎤 Mic Drop",
-file:"sounds/micdrop.mp3"
-},
-
-{
-name:"💀 Skull",
-file:"sounds/skull.mp3"
-}
-
+const soundFiles = ["67.mp3",
+"aiaiaiii.mp3",
+"airhorn.mp3",
+"aughh.mp3",
+"avocado.mp3",
+"bababooey.mp3",
+"Bajba.mp3",
+"Bomb.mp3",
+"Brain.mp3",
+"bye.mp3",
+"Byerobloxsoundeffect(mp3cut.net).mp3",
+"CatLaughingMemeSoundEffect(mp3cut.net).mp3",
+"cheese.mp3",
+"China social credit song.mp3",
+"Chinese social credit meme  #chinese #chinesememe #socialcreditmeme #meme #funnyvideos.mp3",
+"DomerSoundEffect.mp3",
+"DoraisinNokiaXD.mp3",
+"Dramaticfartsoundeffect_.mp3",
+"Ewbrother.mp3",
+"Fahh-memesoundeffect.mp3",
+"falling.mp3",
+"Fartsoundeffect.mp3",
+"FBIOpenUpMeme-SoundEffect(HD).mp3",
+"FlirtyWhistleSoundEffect-FreeDownload(HD).mp3",
+"flushing.mp3",
+"FunnyLaugh-SoundEffect(HD).mp3",
+"GlassBreakingSoundEffectHDGlassShatteringSoundEffect.mp3",
+"GunshotSoundEffect.mp3",
+"Hello.mp3",
+"Helloyourcomputerhasvirus.mp3",
+"hirobloxsoundeffect(mp3cut.net).mp3",
+"hirobloxsoundeffect.mp3",
+"IdiNahuy.mp3",
+"iPhoneChargingSoundHD(mp3cut.net).mp3",
+"LoudBurp-Soundeffect-SoundMeme.mp3",
+"MEOW MEME.mp3",
+"metalpipefallingsoundeffect.mp3",
+"MiBomboSoundEffect.mp3",
+"MicrosoftWindowsXPStartupSound.mp3",
+"MinecraftEating-SoundEffect(HD).mp3",
+"mrbeastsoundeffect.mp3",
+"Ohmygod!Wow!-Meme.mp3",
+"OMG(meme)-SoundEffect(mp3cut.net).mp3",
+"petergriffinyoustupidNsoundeffect.mp3",
+"PHintro-SoundEffects(HD4K).mp3",
+"PopInstrumentalOriginal(mp3cut.net)(1).mp3",
+"PopInstrumentalOriginal(mp3cut.net).mp3",
+"Python.mp3",
+"RahhhSoundEffectMemeNoCopyright.mp3",
+"Ringtone.mp3",
+"Robloxcrying-SoundEffect.mp3",
+"RobloxLaughSoundEffect.mp3",
+"Shooting Stars Meme!.mp3",
+"SlapohSoundeffect.mp3",
+"SoundEffect-SurpriseMotherF.mp3",
+"SupaHotFire - Boom Bam Bop Badabop Boom POW!.mp3",
+"Sweatygamermeme-JustWantLifeToBeFunny.mp3",
+"three.mp3",
+"TwitchAlertSoundEffect.mp3",
+"Why are You Running.mp3",
+"WindowsXPErrorSound.mp3",
+"wojansra!!!.mp3",
+"Yayyy!SoundEffect.mp3",
+"Yum!-TurkeyLeg-Roblox.mp3"
 ];
-
-const grid =
-document.getElementById("grid");
-
-const search =
-document.getElementById("search");
-
-let currentAudio = null;
-let currentButton = null;
-
-function createButtons(filter=""){
-
-    grid.innerHTML = "";
-
-    sounds
-    .filter(sound =>
-        sound.name
-        .toLowerCase()
-        .includes(
-            filter.toLowerCase()
-        )
-    )
-    .forEach(sound=>{
-
-        const btn =
-        document.createElement("div");
-
-        btn.className =
-        "sound-btn";
-
-        btn.textContent =
-        sound.name;
-
-        btn.onclick = ()=>{
-
-            if(
-                currentAudio &&
-                currentAudio.src.includes(
-                    sound.file
-                )
-            ){
-
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-
-                btn.classList.remove(
-                    "playing"
-                );
-
-                currentAudio = null;
-                currentButton = null;
-
-                return;
-            }
-
-            if(currentAudio){
-
-                currentAudio.pause();
-
-                currentAudio.currentTime = 0;
-
-                if(currentButton)
-                    currentButton.classList.remove(
-                        "playing"
-                    );
-            }
-
-            const audio =
-            new Audio(
-                sound.file
-            );
-
-            currentAudio = audio;
-            currentButton = btn;
-
-            btn.classList.add(
-                "playing"
-            );
-
-            audio.play();
-
-            audio.onended = ()=>{
-
-                btn.classList.remove(
-                    "playing"
-                );
-
-                currentAudio = null;
-                currentButton = null;
-            };
-        };
-
-        grid.appendChild(btn);
-    });
-}
-
-search.addEventListener(
-    "input",
-    ()=>{
-        createButtons(
-            search.value
-        );
-    }
-);
-
-createButtons();
-
-</script>
-
-</body>
-</html>
