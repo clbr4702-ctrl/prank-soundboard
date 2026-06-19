@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prank Soundboard</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:#050505;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* ===== TŁO ===== */
+
+.bg{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+}
+
+.blob{
+    position:absolute;
+    width:500px;
+    height:500px;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:.7;
+}
+
+.blob:nth-child(1){
+    background:#0066ff;
+    left:-100px;
+    top:-100px;
+}
+
+.blob:nth-child(2){
+    background:#7b2fff;
+    right:-100px;
+    top:100px;
+}
+
+.blob:nth-child(3){
+    background:#00d4ff;
+    bottom:-150px;
+    left:30%;
+}
+
+/* ===== HEADER ===== */
+
+.header{
+    position:sticky;
+    top:0;
+    padding:20px;
+    backdrop-filter:blur(20px);
+    background:rgba(0,0,0,.25);
+    z-index:100;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.search{
+    width:100%;
+    max-width:700px;
+    display:block;
+    margin:auto;
+
+    padding:15px;
+
+    border:none;
+    outline:none;
+
+    border-radius:15px;
+
+    background:rgba(255,255,255,.12);
+    color:white;
+
+    font-size:16px;
+}
+
+.search::placeholder{
+    color:#ddd;
+}
+
+/* ===== GRID ===== */
+
+.grid{
+    padding:25px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:15px;
+}
+
+.sound-btn{
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    backdrop-filter:blur(15px);
+
+    border-radius:20px;
+
+    padding:20px;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+    text-align:center;
+
+    font-size:18px;
+}
+
+.sound-btn:hover{
+    transform:scale(1.03);
+    background:rgba(255,255,255,.15);
+}
+
+.sound-btn.playing{
+    border-color:#00ff88;
+    box-shadow:0 0 20px rgba(0,255,136,.4);
+}
+
+</style>
+</head>
+<body>
+
+<div class="bg">
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+</div>
+
+<div class="header">
+
+    <h1>🔊 Prank Soundboard</h1>
+
+    <input
+        type="text"
+        id="search"
+        class="search"
+        placeholder="Search sounds..."
+    >
+
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+
+const sounds = [
+
+{
+name:"🚨 Air Horn",
+file:"sounds/airhorn.mp3"
+},
+
+{
+name:"💨 Fart",
+file:"sounds/fart.mp3"
+},
+
+{
+name:"🚔 Police Siren",
+file:"sounds/police.mp3"
+},
+
+{
+name:"💥 Vine Boom",
+file:"sounds/vineboom.mp3"
+},
+
+{
+name:"🔔 Bell",
+file:"sounds/bell.mp3"
+},
+
+{
+name:"🐱 Meow",
+file:"sounds/meow.mp3"
+},
+
+{
+name:"🐶 Bark",
+file:"sounds/bark.mp3"
+},
+
+{
+name:"😂 Laugh",
+file:"sounds/laugh.mp3"
+},
+
+{
+name:"🚪 Knock",
+file:"sounds/knock.mp3"
+},
+
+{
+name:"📱 iPhone",
+file:"sounds/iphone.mp3"
+},
+
+{
+name:"🎺 Trumpet",
+file:"sounds/trumpet.mp3"
+},
+
+{
+name:"🔥 Bruh",
+file:"sounds/bruh.mp3"
+},
+
+{
+name:"⚡ Error",
+file:"sounds/error.mp3"
+},
+
+{
+name:"🎮 Among Us",
+file:"sounds/amongus.mp3"
+},
+
+{
+name:"🚗 Car Horn",
+file:"sounds/carhorn.mp3"
+},
+
+{
+name:"👻 Scary",
+file:"sounds/scary.mp3"
+},
+
+{
+name:"🐔 Chicken",
+file:"sounds/chicken.mp3"
+},
+
+{
+name:"🦆 Duck",
+file:"sounds/duck.mp3"
+},
+
+{
+name:"🎤 Mic Drop",
+file:"sounds/micdrop.mp3"
+},
+
+{
+name:"💀 Skull",
+file:"sounds/skull.mp3"
+}
+
+];
+
+const grid =
+document.getElementById("grid");
+
+const search =
+document.getElementById("search");
+
+let currentAudio = null;
+let currentButton = null;
+
+function createButtons(filter=""){
+
+    grid.innerHTML = "";
+
+    sounds
+    .filter(sound =>
+        sound.name
+        .toLowerCase()
+        .includes(
+            filter.toLowerCase()
+        )
+    )
+    .forEach(sound=>{
+
+        const btn =
+        document.createElement("div");
+
+        btn.className =
+        "sound-btn";
+
+        btn.textContent =
+        sound.name;
+
+        btn.onclick = ()=>{
+
+            if(
+                currentAudio &&
+                currentAudio.src.includes(
+                    sound.file
+                )
+            ){
+
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+
+                btn.classList.remove(
+                    "playing"
+                );
+
+                currentAudio = null;
+                currentButton = null;
+
+                return;
+            }
+
+            if(currentAudio){
+
+                currentAudio.pause();
+
+                currentAudio.currentTime = 0;
+
+                if(currentButton)
+                    currentButton.classList.remove(
+                        "playing"
+                    );
+            }
+
+            const audio =
+            new Audio(
+                sound.file
+            );
+
+            currentAudio = audio;
+            currentButton = btn;
+
+            btn.classList.add(
+                "playing"
+            );
+
+            audio.play();
+
+            audio.onended = ()=>{
+
+                btn.classList.remove(
+                    "playing"
+                );
+
+                currentAudio = null;
+                currentButton = null;
+            };
+        };
+
+        grid.appendChild(btn);
+    });
+}
+
+search.addEventListener(
+    "input",
+    ()=>{
+        createButtons(
+            search.value
+        );
+    }
+);
+
+createButtons();
+
+</script>
+
+</body>
+</html>
